@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
+    kotlin("kapt") version "1.9.25"
     id("org.springframework.boot") version "3.5.7"
     id("io.spring.dependency-management") version "1.1.7"
 }
@@ -20,24 +21,16 @@ repositories {
 }
 
 dependencies {
-    // Core Spring Boot (already present – gives auto-configuration, actuator, etc.)
     implementation("org.springframework.boot:spring-boot-starter")
-
-    // ---- ADD THESE FOR WEB & JPA ----
-    implementation("org.springframework.boot:spring-boot-starter-web")      // REST / MVC
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa") // JPA + Hibernate
-
-    // Kotlin reflection (required by Spring when using Kotlin)
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-
-    // ---- OPTIONAL BUT RECOMMENDED ----
-    // In-memory DB for quick local development / tests
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    implementation("org.apache.commons:commons-lang3:3.19.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    kapt("org.mapstruct:mapstruct-processor:1.6.3")
     runtimeOnly("com.h2database:h2")
-
-    // Hot-reload during development
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-    // ---- TEST DEPENDENCIES ----
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -45,7 +38,17 @@ dependencies {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
+        freeCompilerArgs.addAll(
+            "-Xjsr305=strict",
+        )
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs("build/generated/kapt/main")
+        }
     }
 }
 
