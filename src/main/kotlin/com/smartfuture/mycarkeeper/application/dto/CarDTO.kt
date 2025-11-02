@@ -5,5 +5,6 @@ data class CarDTO(
     val make: String,
     val model: String,
     val year: Int,
-    val vin: String
+    val vin: String,
+    val parts: List<PartDTO>
 )

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 
+@Suppress("unused")
 @RestController
 @Tag(name = "Cars", description = "Car management endpoints")
 class CarController(
@@ -26,7 +27,7 @@ class CarController(
         description = "Retrieves detailed information about a specific car by its ID"
     )
     fun carDetails(@PathVariable id: String): ResponseEntity<*> {
-        val car = carRepository.getCarDetails(id)
+        val car = carRepository.findById(id)
         return if (car != null) {
             ResponseEntity.ok(car.toDTO())
         } else {

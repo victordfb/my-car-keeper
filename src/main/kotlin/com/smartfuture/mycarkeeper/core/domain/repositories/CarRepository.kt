@@ -5,5 +5,5 @@ import com.smartfuture.mycarkeeper.core.domain.Car
 interface CarRepository {
 
     fun getAllCars(): List<Car>
-    fun getCarDetails(carId: String): Car?
+    fun findById(carId: String): Car?
 }
