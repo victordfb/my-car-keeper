@@ -32,5 +32,8 @@ data class Car(
         parts.add(part)
     }
 
+    fun getNextPartsChange(): List<PartChange> =
+        parts.mapNotNull { part -> partChanges.lastOrNull { it.partId == part.id } }
+
     private fun currentOdometer() = odometerReadings.last()
 }

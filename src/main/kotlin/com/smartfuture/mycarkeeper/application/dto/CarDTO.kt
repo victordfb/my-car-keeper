@@ -6,5 +6,6 @@ data class CarDTO(
     val model: String,
     val year: Int,
     val vin: String,
+    val odometer: Long,
     val parts: List<PartDTO>
 )

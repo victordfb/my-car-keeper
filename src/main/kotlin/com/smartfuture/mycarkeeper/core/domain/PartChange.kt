@@ -10,5 +10,10 @@ data class PartChange(
     val odometer: Long,
     val odometerExpiration: Long,
     val duration: Duration,
+) {
+    val expirationDate: LocalDateTime
+        get() = moment.plus(duration)
 
-    )
+    val expirationOdometer: Long
+        get() = odometer + odometerExpiration
+}
