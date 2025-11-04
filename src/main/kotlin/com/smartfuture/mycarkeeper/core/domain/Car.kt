@@ -32,6 +32,10 @@ data class Car(
         parts.add(part)
     }
 
+    fun removePart(partId: String) {
+        parts.removeIf { it.id == partId }
+    }
+
     fun getNextPartsChange(): List<PartChange> =
         parts.mapNotNull { part -> partChanges.lastOrNull { it.partId == part.id } }
 
