@@ -20,6 +20,7 @@ class CarPartsChangeService(
     fun addCarPart(carId: String, part: Part) {
         val car = carRepository.findById(carId)
         car?.addPart(part)
+        car?.also { carRepository.save(it) }
     }
 
     fun removeCarPart(carId: String, partId: String) {
@@ -30,12 +31,14 @@ class CarPartsChangeService(
     fun setOdometerReading(carId: String, odometerReading: Long) {
         val car = carRepository.findById(carId)
         car?.setOdometerReading(odometerReading)
+        car?.also { carRepository.save(it) }
     }
 
     fun changePart(carId: String, partId: String, odometerExpiration: Long, duration: Duration) {
         val car = carRepository.findById(carId)
         car?.parts?.firstOrNull { it.id == partId }?.apply {
             car.setPartsChange(this, odometerExpiration, duration)
+            carRepository.save(car)
         }
     }
 

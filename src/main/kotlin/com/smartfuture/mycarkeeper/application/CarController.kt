@@ -34,7 +34,7 @@ class CarController(
         description = "Retrieves detailed information about a specific car by its ID"
     )
     fun carDetails(@PathVariable id: String): ResponseEntity<*> {
-        val car = carRepository.findById(id)
+        val car = carRepository.findByIdWithDetails(id)
         return if (car != null) {
             ResponseEntity.ok(car.toDTO())
         } else {
@@ -104,7 +104,6 @@ class CarController(
         return if (car != null) {
             val part = Part(id = UUID.randomUUID().toString(), name = request.partName)
             carPartsChangeService.addCarPart(id, part)
-            carRepository.save(car)
             ResponseEntity.created(URI.create("/car/$id/details")).body(mapOf("message" to "Part added successfully"))
         } else {
             ResponseEntity.status(404).body(mapOf("error" to "Car with id '$id' not found"))
