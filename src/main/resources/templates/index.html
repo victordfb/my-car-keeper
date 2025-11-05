@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(title='Home', content=~{::content})}">
+<head>
+    <title>Home</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="card">
+        <h1>Welcome to My Car Keeper Application! 🚗</h1>
+        <p style="margin: 20px 0; font-size: 18px;">
+            Keep track of your cars, parts, and maintenance schedules all in one place.
+        </p>
+
+        <div style="margin-top: 30px;">
+            <h2 style="margin-bottom: 15px;">Quick Actions</h2>
+            <a th:href="@{/web/cars}" class="btn btn-primary">View All Cars</a>
+            <a th:href="@{/web/cars/new}" class="btn btn-success">Add New Car</a>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <h3 style="margin-bottom: 10px;">Features</h3>
+            <ul style="list-style-position: inside; line-height: 2;">
+                <li>Manage your car fleet</li>
+                <li>Track parts and maintenance</li>
+                <li>Monitor odometer readings</li>
+                <li>Schedule part changes</li>
+            </ul>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

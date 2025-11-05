@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(title='Car Details', content=~{::content})}">
+<head>
+    <title>Car Details</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div style="margin-bottom: 20px;">
+        <a th:href="@{/web/cars}" class="btn btn-secondary">← Back to List</a>
+        <a th:href="@{/web/cars/{id}/edit(id=${car.id})}" class="btn btn-primary">Edit Car</a>
+    </div>
+
+    <div class="card">
+        <h1 th:text="${car.make + ' ' + car.model}">Car Name</h1>
+
+        <div style="margin-top: 30px;">
+            <h2 style="margin-bottom: 15px; color: #555;">Vehicle Information</h2>
+
+            <table style="box-shadow: none;">
+                <tr>
+                    <th style="width: 200px; background-color: #f8f9fa; color: #333;">Make</th>
+                    <td th:text="${car.make}">Toyota</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #f8f9fa; color: #333;">Model</th>
+                    <td th:text="${car.model}">Camry</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #f8f9fa; color: #333;">Year</th>
+                    <td th:text="${car.year}">2020</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #f8f9fa; color: #333;">VIN</th>
+                    <td th:text="${car.vin}">1234567890</td>
+                </tr>
+                <tr>
+                    <th style="background-color: #f8f9fa; color: #333;">Odometer</th>
+                    <td th:text="${car.odometer} + ' km'">0 km</td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin-top: 30px;" th:if="${!car.parts.isEmpty()}">
+            <h2 style="margin-bottom: 15px; color: #555;">Parts</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Part Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="part : ${car.parts}">
+                    <td th:text="${part.name}">Part Name</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 30px;" th:if="${car.parts.isEmpty()}">
+            <p style="color: #777; text-align: center; padding: 20px;">
+                No parts added yet.
+            </p>
+        </div>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <form th:action="@{/web/cars/{id}/delete(id=${car.id})}" method="post">
+                <button type="submit"
+                        class="btn btn-danger"
+                        onclick="return confirm('Are you sure you want to delete this car? This action cannot be undone.')">
+                    Delete This Car
+                </button>
+            </form>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.smartfuture.mycarkeeper.application
+package com.smartfuture.mycarkeeper.application.api
 
 import com.smartfuture.mycarkeeper.application.dto.CarDTO
 import com.smartfuture.mycarkeeper.application.mappers.toDTO
@@ -17,7 +17,7 @@ import java.util.*
 
 @Suppress("unused")
 @RestController
-@RequestMapping("/car")
+@RequestMapping("/api/car")
 @Tag(name = "Cars", description = "Car management endpoints")
 class CarController(
     private val carRepository: CarRepository,

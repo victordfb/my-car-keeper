@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(title='Cars List', content=~{::content})}">
+<head>
+    <title>Cars List</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>My Cars</h1>
+        <a th:href="@{/web/cars/new}" class="btn btn-success">+ Add New Car</a>
+    </div>
+
+    <div th:if="${cars.isEmpty()}" class="card">
+        <p style="text-align: center; color: #777; padding: 40px;">
+            No cars found. Start by adding your first car!
+        </p>
+        <div style="text-align: center;">
+            <a th:href="@{/web/cars/new}" class="btn btn-primary">Add Your First Car</a>
+        </div>
+    </div>
+
+    <table th:if="${!cars.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>VIN</th>
+            <th style="text-align: center;">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="car : ${cars}">
+            <td th:text="${car.make}">Toyota</td>
+            <td th:text="${car.model}">Camry</td>
+            <td th:text="${car.year}">2020</td>
+            <td th:text="${car.vin}">1234567890</td>
+            <td style="text-align: center;">
+                <a th:href="@{/web/cars/{id}(id=${car.id})}" class="btn btn-primary">View</a>
+                <a th:href="@{/web/cars/{id}/edit(id=${car.id})}" class="btn btn-secondary">Edit</a>
+                <form th:action="@{/web/cars/{id}/delete(id=${car.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this car?')">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</th:block>
+</body>
+</html>
