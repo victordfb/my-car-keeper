@@ -3,17 +3,21 @@ package com.smartfuture.mycarkeeper.application.web
 import com.smartfuture.mycarkeeper.application.mappers.toDTO
 import com.smartfuture.mycarkeeper.core.domain.Car
 import com.smartfuture.mycarkeeper.core.domain.repositories.CarRepository
+import com.smartfuture.mycarkeeper.core.service.CarPartsChangeService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
+import java.time.Duration
+
 import java.util.*
 
 
 @Controller
 @RequestMapping("/web/cars")
 class CarWebController(
-    private val carRepository: CarRepository
+    private val carRepository: CarRepository,
+    private val carService: CarPartsChangeService
 ) {
 
     @GetMapping
@@ -49,9 +53,11 @@ class CarWebController(
 
     @GetMapping("/{id}")
     fun showCarDetails(@PathVariable id: String, model: Model): String {
-        val car = carRepository.findByIdWithDetails(id)?.toDTO()
-        return if (car != null) {
-            model.addAttribute("car", car)
+        val car = carRepository.findByIdWithDetails(id)
+        val carDto = car?.toDTO()
+        return if (carDto != null) {
+            model.addAttribute("partChanges", car.getNextPartsChange().groupBy { it.partId })
+            model.addAttribute("car", carDto)
             "cars/details"
         } else {
             model.addAttribute("error", "Car not found")
@@ -78,6 +84,39 @@ class CarWebController(
             model.addAttribute("error", "Car not found")
             "error"
         }
+    }
+
+    @PostMapping("/{carId}/odometer")
+    fun updateOdometer(
+        @PathVariable carId: String,
+        @RequestParam odometer: Long,
+        model: Model,
+        redirectAttributes: RedirectAttributes
+    ): String {
+        try {
+            carService.setOdometerReading(carId, odometer)
+            redirectAttributes.addFlashAttribute("success", true)
+        } catch (e: Exception) {
+            redirectAttributes.addFlashAttribute("error", true)
+        }
+        return "redirect:/web/cars/$carId"
+    }
+
+    @PostMapping("/{carId}/parts/{partId}/change")
+    fun changePart(
+        @PathVariable carId: String,
+        @PathVariable partId: String,
+        @RequestParam odometerExpires: Long,
+        @RequestParam durationExpires: Long,
+        redirectAttributes: RedirectAttributes
+    ): String {
+        try {
+            carService.changePart(carId, partId, odometerExpires, Duration.ofDays(durationExpires))
+            redirectAttributes.addFlashAttribute("success", "Part change scheduled!")
+        } catch (e: Exception) {
+            redirectAttributes.addFlashAttribute("error", "Failed to schedule part change.")
+        }
+        return "redirect:/web/cars/$carId"
     }
 
     @PostMapping("/{id}")
