@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(title='Error', content=~{::content})}">
+      th:replace="~{layout :: layout(title='Error', content=~{::content}, modals=~{::modals}, scripts=~{::scripts})}">
 <head>
     <title>Error</title>
 </head>
@@ -14,6 +14,10 @@
         <a th:href="@{/home}" class="btn btn-primary">Go to Home</a>
         <a th:href="@{/web/cars}" class="btn btn-secondary">View Cars</a>
     </div>
+</th:block>
+<th:block th:fragment="modals">
+</th:block>
+<th:block th:fragment="scripts">
 </th:block>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(title='Cars List', content=~{::content})}">
+      th:replace="~{layout :: layout(title='Cars List', content=~{::content}, modals=~{::modals}, scripts=~{::scripts})}">
 <head>
     <title>Cars List</title>
 </head>
@@ -49,6 +49,10 @@
         </tr>
         </tbody>
     </table>
+</th:block>
+<th:block th:fragment="modals">
+</th:block>
+<th:block th:fragment="scripts">
 </th:block>
 </body>
 </html>

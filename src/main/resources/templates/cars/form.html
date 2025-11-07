@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(title=${isEdit ? 'Edit Car' : 'New Car'}, content=~{::content})}">
+      th:replace="~{layout :: layout(title=${isEdit ? 'Edit Car' : 'New Car'}, content=~{::content}, modals=~{::modals}, scripts=~{::scripts})}">
 <head>
     <title>Car Form</title>
 </head>
@@ -66,6 +66,10 @@
             </div>
         </form>
     </div>
+</th:block>
+<th:block th:fragment="modals">
+</th:block>
+<th:block th:fragment="scripts">
 </th:block>
 </body>
 </html>

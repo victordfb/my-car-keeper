@@ -2,6 +2,7 @@ package com.smartfuture.mycarkeeper.application.web
 
 import com.smartfuture.mycarkeeper.application.mappers.toDTO
 import com.smartfuture.mycarkeeper.core.domain.Car
+import com.smartfuture.mycarkeeper.core.domain.Part
 import com.smartfuture.mycarkeeper.core.domain.repositories.CarRepository
 import com.smartfuture.mycarkeeper.core.service.CarPartsChangeService
 import org.springframework.stereotype.Controller
@@ -102,6 +103,22 @@ class CarWebController(
         return "redirect:/web/cars/$carId"
     }
 
+    @PostMapping("/{carId}/parts")
+    fun addPart(
+        @PathVariable carId: String,
+        @RequestParam partName: String,
+        redirectAttributes: RedirectAttributes
+    ): String {
+        try {
+            val part = Part(UUID.randomUUID().toString(), partName)
+            carService.addCarPart(carId, part)
+            redirectAttributes.addFlashAttribute("success", true)
+        } catch (e: Exception) {
+            redirectAttributes.addFlashAttribute("error", true)
+        }
+        return "redirect:/web/cars/$carId"
+    }
+
     @PostMapping("/{carId}/parts/{partId}/change")
     fun changePart(
         @PathVariable carId: String,
@@ -111,7 +128,7 @@ class CarWebController(
         redirectAttributes: RedirectAttributes
     ): String {
         try {
-            carService.changePart(carId, partId, odometerExpires, Duration.ofDays(durationExpires))
+            carService.changePart(carId, partId, odometerExpires, Duration.ofDays(durationExpires * 30))
             redirectAttributes.addFlashAttribute("success", "Part change scheduled!")
         } catch (e: Exception) {
             redirectAttributes.addFlashAttribute("error", "Failed to schedule part change.")

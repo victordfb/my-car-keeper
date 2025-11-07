@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout :: layout(title='Car Details', content=~{::content})}">
+      th:replace="~{layout :: layout(title='Car Details', content=~{::content}, modals=~{::modals}, scripts=~{::scripts})}">
 <head>
     <title>Car Details</title>
 </head>
@@ -11,6 +11,7 @@
         <a th:href="@{/web/cars/{id}/edit(id=${car.id})}" class="btn btn-primary">Edit Car</a>
     </div>
 
+    <!-- ====================== CAR INFO (unchanged) ====================== -->
     <div class="card">
         <h1 th:text="${car.make + ' ' + car.model}">Car Name</h1>
 
@@ -18,30 +19,15 @@
         <div style="margin-top: 30px;">
             <h2 style="margin-bottom: 15px; color: #555;">Vehicle Information</h2>
             <table style="box-shadow: none;">
-                <tr>
-                    <th style="width: 200px; background-color: #f8f9fa; color: #333;">Make</th>
-                    <td th:text="${car.make}">Toyota</td>
-                </tr>
-                <tr>
-                    <th style="background-color: #f8f9fa; color: #333;">Model</th>
-                    <td th:text="${car.model}">Camry</td>
-                </tr>
-                <tr>
-                    <th style="background-color: #f8f9fa; color: #333;">Year</th>
-                    <td th:text="${car.year}">2020</td>
-                </tr>
-                <tr>
-                    <th style="background-color: #f8f9fa; color: #333;">VIN</th>
-                    <td th:text="${car.vin}">1234567890</td>
-                </tr>
-                <tr>
-                    <th style="background-color: #f8f9fa; color: #333;">Odometer</th>
-                    <td th:text="${car.odometer} + ' km'">0 km</td>
-                </tr>
+                <tr><th style="width: 200px; background-color: #f8f9fa; color: #333;">Make</th><td th:text="${car.make}">Toyota</td></tr>
+                <tr><th style="background-color: #f8f9fa; color: #333;">Model</th><td th:text="${car.model}">Camry</td></tr>
+                <tr><th style="background-color: #f8f9fa; color: #333;">Year</th><td th:text="${car.year}">2020</td></tr>
+                <tr><th style="background-color: #f8f9fa; color: #333;">VIN</th><td th:text="${car.vin}">1234567890</td></tr>
+                <tr><th style="background-color: #f8f9fa; color: #333;">Odometer</th><td th:text="${car.odometer} + ' km'">0 km</td></tr>
             </table>
         </div>
 
-        <!-- Odometer Update Panel -->
+        <!-- Odometer Update Panel (unchanged) -->
         <div style="margin-top: 40px; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
             <h3 style="margin-top: 0; color: #333; font-size: 1.2em;">Update Odometer Reading</h3>
             <form th:action="@{/web/cars/{id}/odometer(id=${car.id})}" method="post"
@@ -69,6 +55,7 @@
             </div>
         </div>
 
+        <!-- ====================== PARTS TABLE ====================== -->
         <div style="margin-top: 30px;" th:if="${!car.parts.isEmpty()}">
             <h2 style="margin-bottom: 15px; color: #555;">Parts</h2>
             <table class="table table-striped">
@@ -82,18 +69,15 @@
                 </thead>
                 <tbody>
                 <tr th:each="part : ${car.parts}">
-                    <!-- Find matching partChange by part.id -->
                     <th:block th:with="change=${partChanges.get(part.id)}">
                         <td th:text="${part.name}">Oil Filter</td>
 
-                        <!-- Odometer Expires -->
                         <td style="text-align:center;">
-                        <span th:if="${change != null and change.get(0).expirationOdometer != null}"
-                              th:text="${change.get(0).expirationOdometer} + ' km'">—</span>
+                            <span th:if="${change != null and change.get(0).expirationOdometer != null}"
+                                  th:text="${change.get(0).expirationOdometer} + ' km'">—</span>
                             <span th:if="${change == null or change.get(0).expirationOdometer == null}">—</span>
                         </td>
 
-                        <!-- Duration Expires (as Date) -->
                         <td style="text-align:center;">
                             <span th:if="${change != null and change.get(0).expirationDate != null}"
                                   th:text="${#temporals.format(change.get(0).expirationDate, 'MMM d, yyyy')}">
@@ -102,7 +86,6 @@
                             <span th:if="${change == null or change.get(0).expirationDate == null}">—</span>
                         </td>
 
-                        <!-- Change Button -->
                         <td style="text-align:center;">
                             <button type="button"
                                     class="btn btn-sm btn-outline-primary change-part-btn"
@@ -124,7 +107,15 @@
             </p>
         </div>
 
-        <!-- Delete Form -->
+        <!-- ==== NEW ADD PART BUTTON ==== -->
+        <div>
+            <button type="button" class="btn btn-success"
+                    data-bs-toggle="modal" data-bs-target="#addPartModal">
+                Add Part
+            </button>
+        </div>
+
+        <!-- Delete Form (unchanged) -->
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
             <form th:action="@{/web/cars/{id}/delete(id=${car.id})}" method="post">
                 <button type="submit"
@@ -135,8 +126,10 @@
             </form>
         </div>
     </div>
+</th:block>
 
-    <!-- ====================== MODAL ====================== -->
+<th:block th:fragment="modals">
+    <!-- ====================== CHANGE PART MODAL (unchanged) ====================== -->
     <div class="modal fade" id="changePartModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -162,18 +155,41 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Confirm</button>
+                            <button type="submit" class="btn btn-primary">Confirm</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- ====================== END MODAL ====================== -->
 
-    <!-- Bootstrap JS (must be after the modal) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- ====================== NEW ADD PART MODAL ====================== -->
+    <div class="modal fade" id="addPartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a Part to <span th:text="${car.make + ' ' + car.model}"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addPartForm" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="partName" class="form-label">Part Name</label>
+                            <input type="text" class="form-control" id="partName"
+                                   name="partName" min="1" step="1" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Add Part</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</th:block>
 
-    <!-- Dynamically set modal data & form action -->
+<th:block th:fragment="scripts">
+    <!-- ====================== CHANGE PART SCRIPT (unchanged) ====================== -->
     <script th:inline="javascript">
         /*<![CDATA[*/
         document.addEventListener('DOMContentLoaded', function () {
@@ -183,21 +199,32 @@
             const idInput = document.getElementById('modalPartId');
 
             modal.addEventListener('show.bs.modal', function (event) {
-                const button   = event.relatedTarget;               // the "Change" button
+                const button   = event.relatedTarget;
                 const partId   = button.getAttribute('data-part-id');
                 const partName = button.getAttribute('data-part-name');
                 const carId    = /*[[${car.id}]]*/ '0';
 
                 nameSpan.textContent = partName;
                 idInput.value        = partId;
-
-                // POST to /web/cars/{carId}/parts/{partId}/change
                 form.action = `/web/cars/${carId}/parts/${partId}/change`;
             });
         });
         /*]]>*/
     </script>
 
+    <!-- ====================== NEW ADD PART SCRIPT ====================== -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function () {
+            const addModal   = document.getElementById('addPartModal');
+            const addForm    = document.getElementById('addPartForm');
+            const carId      = /*[[${car.id}]]*/ '0';
+            addModal.addEventListener('show.bs.modal', function () {
+                addForm.action = `/web/cars/${carId}/parts`;
+            });
+        });
+        /*]]>*/
+    </script>
 </th:block>
 </body>
 </html>
